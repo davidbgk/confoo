@@ -1,0 +1,38 @@
+<twt-raw>
+  <span></span>
+  <script>
+    this.root.innerHTML = opts.html // WARNING: XSS!
+  </script>
+</twt-raw>
+
+<twt-item>
+  <article>
+    <p>
+      <strong>@{ tweet.username }</strong>:
+      <twt-raw html="{ usernamize(tweet.content) }"></twt-raw>
+    </p>
+  </article>
+  <script>
+    // Rewrite tweets with links to people like Twitter.
+    this.usernamize =
+      content => content.replace(/[@]+[A-Za-z0-9-_]+/g,
+        username => username.link(`#${username.replace('@','')}`))
+    // TODO: add routes for these links.
+  </script>
+</twt-item>
+
+<twt-list>
+  <style scoped>
+    p {
+      font-size: calc(var(--fontSize)*3);
+    }
+  </style>
+  <twt-item each={ tweet, i in opts.tweets.data }></twt-item>
+  <script>
+    // Refresh the list of tweets on change.
+    this.opts.tweets.on('updated', () => this.update())
+    // Check for new tweets every 10 seconds.
+    setInterval(() => this.opts.loadTweets(), 10000)
+    // TODO: make that value a parameter of the tag.
+  </script>
+</twt-list>

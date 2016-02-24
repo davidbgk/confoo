@@ -1,0 +1,45 @@
+<twt-form>
+  <style scoped>
+    :scope * {
+      font-size: calc(var(--fontSize)*2.5);
+      width: 100%;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <!-- RiotJS uses `onsubmit` and `onclick` attributes. -->
+  <form onsubmit={ add }>
+    <input name=username type=text
+      placeholder="Your username" value=davidbgk />
+    <textarea name=content
+      placeholder="What are you eating?"></textarea>
+    <button>Submit</button>
+  </form>
+  <script>
+    this.add = (event) => {
+      /* When the form is submitted, we post the new tweet
+      through an AJAX request. TODO: refactor. */
+      event.preventDefault()
+      fetch(this.opts.tweetsUrl, {
+          method: 'post',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            /* RiotJS automatically add `name`d attributes
+            to `this` for easy access. */
+            username: this.username.value,
+            content: this.content.value
+          })
+        })
+        .then(response => response.json())
+        .then(tweet => {
+          this.opts.tweets.trigger('new', tweet)
+          this.content.value = ''
+        })
+        .catch(console.error.bind(console))
+    }
+  </script>
+</twt-form>

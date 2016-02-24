@@ -1,0 +1,82 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>mnmlst stack demo</title>
+<!-- Fake favicon, to avoid extra request to server -->
+<link rel=icon href="data:;base64,iVBORw0KGgo=">
+<style>
+  /* Use CSS variables. */
+  :root {
+    --fontSize: 10px;
+  }
+  section {
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+</style>
+<section>
+  <!-- Add placeholders for custom components. -->
+  <twt-title></twt-title>
+  <twt-form></twt-form>
+  <twt-list></twt-list>
+</section>
+<!-- Retrieve and compile on-the-fly riot tags. -->
+<script type=riot/tag src=twt-title.html></script>
+<script type=riot/tag src=twt-form.html></script>
+<script type=riot/tag src=twt-list.html></script>
+<script src=riot+compiler.js></script>
+<script>
+  /* Use strict ES2015 syntax. */
+  'use strict'
+  const tweetsUrl = 'http://127.0.0.1:5500/tweets'
+  /* Tweets is a Riot observable that receives and triggers
+  event related to data storing. */
+  function Tweets() {
+    riot.observable(this)
+    this.on('update', data => {
+      this.data = data.reverse().slice(0, 5)
+      this.trigger('updated')
+    })
+    this.on('new', tweet => {
+      this.data.splice(0, 0, tweet)
+      this.data = this.data.slice(0, 5)
+      this.trigger('updated')
+    })
+  }
+  const tweets = new Tweets()
+  /* Load distant tweets and return a promise. */
+  function loadTweets() {
+    return fetch(tweetsUrl)
+      .then(response => response.json())
+      .then(data => tweets.trigger('update', data))
+      .catch(console.error.bind(console))
+  }
+  /* Once initial data is loaded, mount Riot tags. */
+  const loaded = loadTweets().then(() => {
+    riot.mount('twt-title')
+    riot.mount('twt-form', {
+      tweets: tweets,
+      tweetsUrl: tweetsUrl
+    })
+    riot.mount('twt-list', {
+      tweets: tweets,
+      loadTweets: loadTweets
+    })
+  })
+</script>
+<!-- Test directly within the browser. -->
+<link rel=stylesheet href=tests-mocha.css>
+<script src=tests-expect.js></script>
+<script src=tests-mocha.js></script>
+<div id=mocha></div>
+<script>
+  mocha.setup({
+    ui: 'bdd',
+    globals: ['tweets']
+  })
+</script>
+<script src=tests-specs.js></script>
+<script>
+  mocha.checkLeaks()
+  /* Launch tests once Riot tags are mounted. */
+  loaded.then(() => mocha.run())
+</script>

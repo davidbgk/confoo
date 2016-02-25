@@ -10,7 +10,7 @@ necessary.
 It's highly opinionated:
 
 - no package.json
-- only 3 Python dependencies
+- no requirements.txt
 - minimal magic
 - easy debugging
 - fast testing
@@ -26,13 +26,15 @@ https://larlet.fr/david/blog/2016/minimalisme-esthetique/
 
 ### Install
 
-    $ python3.5 -m venv ~/.virtualenvs/confoo
-    $ source ~/.virtualenvs/confoo/bin/activate
-    $ pip install -r server/requirements.txt
+    $ export PYTHONPATH=`pwd`/python-deps/:$PYTHONPATH
 
 ### Run the server
 
-    $ python server/main.py
+    $ python3.5 server/main.py
+
+It will open your default browser, please note that only
+a very recent version of Firefox will be able to run the
+tests and use CSS variables natively.
 
 ### Run tests with silk
 
@@ -42,10 +44,6 @@ And then:
 
     $ silk -silk.url=http://127.0.0.1:5500 README.md
     // => PASS
-
-### Try in a recent browser (latest Firefox or Chromium)
-
-    $ open http://127.0.0.1:5500
 
 
 ## Documentation
@@ -186,7 +184,7 @@ A deletion returns the appropriated status code:
 * `Status`: `204`
 
 
-# What now?
+# What’s next?
 
 The code is not perfect and that's a feature, try the
 mini-stack and adapt it to your own needs, some suggestions:
@@ -196,6 +194,9 @@ mini-stack and adapt it to your own needs, some suggestions:
 - livereload silk tests
 - add routes for filtering when you click a username
 - make the refresh delay a parameter of the tag
+- fix JS tests for Chromium
 - improve mocha testing
+- remove the server/requirements.txt file once tested
 
-No need to propose a pull-request for that, just enjoy!
+No need to propose a pull-request for that (remember that
+I’m a starter ;-)), just enjoy!

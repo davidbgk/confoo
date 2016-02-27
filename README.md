@@ -24,13 +24,9 @@ A summary of the conference in French can be found here:
 https://larlet.fr/david/blog/2016/minimalisme-esthetique/
 
 
-### Install
-
-    $ export PYTHONPATH=`pwd`/python-deps/:$PYTHONPATH
-
 ### Run the server
 
-    $ python3.5 server/main.py
+    $ ./app.pex server/main.py
 
 It will open your default browser, please note that only
 a very recent version of Firefox will be able to run the

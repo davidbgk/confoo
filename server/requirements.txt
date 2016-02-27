@@ -1,4 +1,7 @@
-# Dependencies budget: less than 5.
+# This file is only in use to generate the PEX file through
+# that command:
+# $ pex -r server/requirements.txt -o app.pex
+# Note that you can use a virtualenv if you prefer though.
 falcon==0.3.0
 livereload==2.4.1
 tinydb==3.1.2
